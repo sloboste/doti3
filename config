@@ -24,7 +24,7 @@ font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec uxterm
+bindsym $mod+Return exec "uxterm -e bash"
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -155,7 +155,7 @@ bar {
         inactive_workspace #073642 #002b36 #839496
         urgent_workspace   #dc322f #dc322f #fdf6e3
     }
-    status_command i3status
+    status_command i3status -c ~/.i3/i3status.conf
 }
 
 client.focused          #002b36 #586e75 #fdf6e3 #268bd2
