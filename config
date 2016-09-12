@@ -165,3 +165,6 @@ client.urgent           #002b36 #dc322f #fdf6e3 #002b36
 
 # Set the background image
 exec --no-startup-id feh --bg-scale /home/steven/Pictures/wallpaper.png
+
+# Start WiFi manager GUI in system tray
+exec wpa_gui -t
