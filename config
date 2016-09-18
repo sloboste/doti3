@@ -163,6 +163,11 @@ client.focused_inactive #002b36 #073642 #839496 #073642
 client.unfocused        #002b36 #073642 #839496 #073642
 client.urgent           #002b36 #dc322f #fdf6e3 #002b36
 
+# Volume keybindings
+bindsym XF86AudioMute exec amixer -q set Master toggle
+bindsym XF86AudioLowerVolume exec amixer -q set Master 2dB- unmute
+bindsym XF86AudioRaiseVolume exec amixer -q set Master 2dB+ unmute
+
 # Set the background image
 exec --no-startup-id feh --bg-scale /home/steven/Pictures/wallpaper.png
 
