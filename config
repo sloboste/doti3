@@ -168,6 +168,9 @@ bindsym XF86AudioMute exec amixer -q set Master toggle
 bindsym XF86AudioLowerVolume exec amixer -q set Master 2dB- unmute
 bindsym XF86AudioRaiseVolume exec amixer -q set Master 2dB+ unmute
 
+# Multiple monitors
+workspace 2 output HDMI1
+
 # Set the background image
 exec --no-startup-id feh --bg-scale /home/steven/Pictures/wallpaper.png
 
