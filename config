@@ -156,6 +156,7 @@ bar {
         urgent_workspace   #dc322f #dc322f #fdf6e3
     }
     status_command i3status -c ~/.i3/i3status.conf
+    tray_output LVDS1
 }
 
 client.focused          #002b36 #586e75 #fdf6e3 #268bd2
