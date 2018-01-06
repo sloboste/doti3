@@ -13,18 +13,23 @@ set $mod Mod1
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below. ISO 10646 = Unicode
-font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+# For non-retina:
+# font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+
 # The font above is very space-efficient, that is, it looks good, sharp and
 # clear in small sizes. However, if you need a lot of unicode glyphs or
 # right-to-left text rendering, you should instead use pango for rendering and
 # chose a FreeType font, such as:
 # font pango:DejaVu Sans Mono 10
+# For retina:
+font pango:monospace 10
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec "uxterm -e bash"
+bindsym $mod+Return exec "gnome-terminal"
+# bindsym $mod+Return exec "urxvtcd"
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -61,10 +66,10 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
-bindsym $mod+shift+v split h
+bindsym $mod+shift+v split v
 
 # split in vertical orientation
-bindsym $mod+v split v
+bindsym $mod+v split h
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen
@@ -110,12 +115,69 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
+# move workspace to different output (monitor)
+set $workspace_move_keymap (h) left, (j) down, (k) up, (l) right
+mode "$workspace_move_keymap" {
+    bindsym h move workspace to output left, mode "default"
+    bindsym j move workspace to output down, mode "default"
+    bindsym k move workspace to output up, mode "default"
+    bindsym l move workspace to output right, mode "default"
+
+    # back to normal
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym Control+bracketleft mode "default"
+}
+bindsym $mod+m mode "$workspace_move_keymap"
+
+# run monitor config script (temporary fix until hotplug works)
+bindsym $mod+Shift+m exec --no-startup-id monitorctl
+
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
-# exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# FIXME combine with fonts(implemented with config file swap)
+# display and keyboard mode
+set $mode_mode (l)aptop, (m)ac_laptop, (d)esktop
+mode "$mode_mode" {
+    bindsym l \
+        exec --no-startup-id keyboardctl laptop, \
+        exec --no-startup-id xrdb -load /home/ssloboda/.Xresources, \
+        mode "default"
+    bindsym m \
+        exec --no-startup-id keyboardctl laptop_mac, \
+        exec --no-startup-id xrdb -load /home/ssloboda/.Xresources-retina, \
+        mode "default"
+    bindsym d \
+        exec --no-startup-id keyboardctl desktop, \
+        exec --no-startup-id xrdb -load /home/ssloboda/.Xresources, \
+        mode "default"
+
+    # back to normal
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym Control+bracketleft mode "default"
+}
+bindsym $mod+Shift+z mode "$mode_mode"
+
+# exit i3 options
+set $mode_system (l)ock, (e)xit, (s)uspend, (h)ibernate, (r)eboot, (S)hutdown
+mode "$mode_system" {
+    bindsym l exec --no-startup-id i3exit lock, mode "default"
+    bindsym e exec --no-startup-id i3exit logout, mode "default"
+    bindsym s exec --no-startup-id i3exit suspend, mode "default"
+    bindsym h exec --no-startup-id i3exit hibernate, mode "default"
+    bindsym r exec --no-startup-id i3exit reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
+
+    # back to normal
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym Control+bracketleft mode "default"
+}
+bindsym $mod+Shift+e mode "$mode_system"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -136,11 +198,11 @@ mode "resize" {
     bindsym Up resize shrink height 10 px or 10 ppt
     bindsym Right resize grow width 10 px or 10 ppt
 
-    # back to normal: Enter or Escape
+    # back to normal
     bindsym Return mode "default"
     bindsym Escape mode "default"
+    bindsym Control+bracketleft mode "default"
 }
-
 bindsym $mod+r mode "resize"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
@@ -155,8 +217,8 @@ bar {
         inactive_workspace #073642 #002b36 #839496
         urgent_workspace   #dc322f #dc322f #fdf6e3
     }
-    status_command i3status -c ~/.i3/i3status.conf
-    tray_output LVDS1
+    status_command i3status -c ~/.config/i3/i3status.conf
+    tray_output primary
 }
 
 client.focused          #002b36 #586e75 #fdf6e3 #268bd2
@@ -166,14 +228,15 @@ client.urgent           #002b36 #dc322f #fdf6e3 #002b36
 
 # Volume keybindings
 bindsym XF86AudioMute exec amixer -q set Master toggle
-bindsym XF86AudioLowerVolume exec amixer -q set Master 2dB- unmute
-bindsym XF86AudioRaiseVolume exec amixer -q set Master 2dB+ unmute
+bindsym XF86AudioLowerVolume exec amixer -q set Master 2%- unmute
+bindsym XF86AudioRaiseVolume exec amixer -q set Master 2%+ unmute
 
-# Multiple monitors
-workspace 2 output HDMI1
+# Brightness keybindings
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10
 
 # Set the background image
-exec --no-startup-id feh --bg-scale /home/steven/Pictures/wallpaper.png
+exec --no-startup-id feh --bg-scale ~/Pictures/wallpaper.png
 
 # Start WiFi manager GUI in system tray
-exec wpa_gui -t
+exec --no-startup-id nm-applet
