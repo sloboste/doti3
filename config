@@ -240,3 +240,6 @@ exec --no-startup-id feh --bg-scale ~/Pictures/wallpaper.png
 
 # Start WiFi manager GUI in system tray
 exec --no-startup-id nm-applet
+
+# Start f.lux manager GUI in system tray
+exec --no-startup-id ~/.local/bin/fluxgui
