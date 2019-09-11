@@ -30,7 +30,7 @@ output $laptop scale 2
 # FIXME implement swapping modes (desktop, macbook, laptop) with mod+shift+z
 # input 1452:628:Apple_Inc._Apple_Internal_Keyboard_/_Trac {
 input "*" {
-    xkb_options ctrl:swapcaps
+    # xkb_options ctrl:swapcaps
     # xkb_options altwin:swap_alt_win
 }
 
@@ -203,10 +203,11 @@ bar {
     tray_output $laptop
 }
 
-client.focused          #002b36 #586e75 #fdf6e3 #268bd2
-client.focused_inactive #002b36 #073642 #839496 #073642
-client.unfocused        #002b36 #073642 #839496 #073642
-client.urgent           #002b36 #dc322f #fdf6e3 #002b36
+#                       border   background  text     indicator  child_border
+client.focused          #002b36  #586e75     #fdf6e3  #268bd2    #586e75
+client.focused_inactive #002b36  #073642     #839496  #073642    #586e75
+client.unfocused        #002b36  #073642     #839496  #073642    #586e75
+client.urgent           #002b36  #dc322f     #fdf6e3  #002b36    #586e75
 
 # Volume keybindings
 bindsym XF86AudioMute exec amixer -q set Master toggle
